@@ -1,0 +1,58 @@
+name: "OSS Triage Reporter"
+author: "solcedar838"
+description: "Generate issue triage, changelog, and CI failure summaries for small open-source maintainers."
+branding:
+  icon: "clipboard"
+  color: "blue"
+inputs:
+  repo:
+    description: "Repository in owner/repo format. Defaults to the current repository."
+    required: false
+    default: "${{ github.repository }}"
+  command:
+    description: "Report command: triage, changelog, ci-summary, or weekly-report."
+    required: false
+    default: "weekly-report"
+  days:
+    description: "Lookback window in days for changelog and weekly-report."
+    required: false
+    default: "7"
+  output-file:
+    description: "Markdown file path to write."
+    required: false
+    default: "oss-maintainer-report.md"
+  github-token:
+    description: "GitHub token used to read issues, PRs, and workflow runs."
+    required: false
+    default: "${{ github.token }}"
+runs:
+  using: "composite"
+  steps:
+    - name: Install oss-triage-reporter
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install "${{ github.action_path }}"
+    - name: Generate maintainer report
+      shell: bash
+      env:
+        GITHUB_TOKEN: "${{ inputs.github-token }}"
+      run: |
+        case "${{ inputs.command }}" in
+          triage)
+            osskit triage "${{ inputs.repo }}" --output "${{ inputs.output-file }}"
+            ;;
+          changelog)
+            osskit changelog "${{ inputs.repo }}" --days "${{ inputs.days }}" --output "${{ inputs.output-file }}"
+            ;;
+          ci-summary)
+            osskit ci-summary "${{ inputs.repo }}" --output "${{ inputs.output-file }}"
+            ;;
+          weekly-report)
+            osskit weekly-report "${{ inputs.repo }}" --days "${{ inputs.days }}" --output "${{ inputs.output-file }}"
+            ;;
+          *)
+            echo "Unsupported command: ${{ inputs.command }}" >&2
+            exit 2
+            ;;
+        esac

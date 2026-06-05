@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oss-triage-reporter"
+version = "0.1.0"
+description = "A lightweight CLI and GitHub Action for small open-source maintainers to summarize issues, pull requests, changelogs, and CI failures."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+  { name = "solcedar838", email = "solcedar838@users.noreply.github.com" }
+]
+keywords = ["github", "opensource", "maintainer", "triage", "changelog", "ci"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Version Control :: Git",
+  "Topic :: Software Development :: Bug Tracking"
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/solcedar838/oss-triage-reporter"
+Issues = "https://github.com/solcedar838/oss-triage-reporter/issues"
+
+[project.scripts]
+osskit = "oss_triage_reporter.cli:main"
+oss-triage-reporter = "oss_triage_reporter.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
